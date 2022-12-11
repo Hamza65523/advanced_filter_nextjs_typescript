@@ -2,6 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+<img src='./assets/img/filter.png' alt="" />
+ 
+
+
 First, run the development server:
 
 ```bash
