@@ -4,6 +4,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 <img src='./assets/img/filter.png' alt="" />
  
+## Demo Live
+https://zippy-torrone-f8494d.netlify.app/
+
 
 
 First, run the development server:
