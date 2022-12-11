@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{memo} from 'react'
 import { NextPage } from 'next'
 import CheckIcon from '@mui/icons-material/Check';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -12,13 +12,12 @@ interface Props{
 }
 const FilterToggle:NextPage<Props> = ({value,selectToggle,options}) => {
   return (
-  
     <div>
          
-    <ToggleButtonGroup value={value} onChange={selectToggle}
+    <ToggleButtonGroup value={value} onChange={selectToggle} exclusive
     className='flex  flex-wrap'>
     {options.map((items :any)=> (
-        <ToggleButton  className='hover:text-black py-2 px-2 flex justify-center items-center gap-2 bg-black rounded-md text-white' key={items.id} value={value}>
+        <ToggleButton  className='hover:text-black  py-2 px-2 flex justify-center items-center gap-2 bg-black rounded-md text-white' key={items.id} value={items.value}>
           <div className="flex justify-center items-center gap-2 ">
           <FontAwesomeIcon className={`text-${items.color}-400 w-4`} icon={items.iconValue}/> <div className="">
           {items.label}
@@ -32,4 +31,4 @@ const FilterToggle:NextPage<Props> = ({value,selectToggle,options}) => {
   )
 }
 
-export default FilterToggle
+export default memo(FilterToggle)

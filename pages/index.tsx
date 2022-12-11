@@ -4,14 +4,88 @@ import styles from '../styles/Home.module.css'
 import SearchBar from '../components/Home/SearchBar/index'
 import FilterPanel from '../components/Home/FilterPanel/index'
 import List from '../components/Home/List/index'
-import React,{useState} from 'react'
+import React,{useState,useEffect,useCallback} from 'react'
+import EmptyList from '../components/Home/EmptyView/index'
+import {dataList} from '../components/constants/index'
 export default function Home() {
-  const [value,setValue]=useState('')
+  const [inputSearch,setInputsearch]=useState('')
   const [selectedCategory,setSelectedCategory]=useState(null)
-  const handlerChange=()=>{
+  const [selectedRating,setSelectedRating]=useState(null)
+  const [list,setList] = useState(dataList)
+  const [resultFound,setResultFound] = useState(true)
+  const [cuision, setCuision] = React.useState<any>([
+    {
+      id:1,
+      checked:false,
+      label:"american"
+    },
+    {
+      id:2,
+      checked:false,
+      label:"austlia"
+    },
+    {
+      id:3,
+      checked:false,
+      label:"Turky"
+    },
+  ]);
 
+ 
+  const changedCheckId=(id:Number)=>{
+  const cuisionStateList = cuision
+  const changeCheckCuision = cuisionStateList.map((item:any)=>item.id === id?{...item,checked:!item.checked}:item)
+  setCuision(changeCheckCuision)
   }
+  
+  const handleSlectCategory=useCallback((event:Event,value:any)=>{
+    !value?null:setSelectedCategory(value)
+},[])
+  const handlerselectedRating=useCallback((event:Event,value:any)=>{
+    !value?null:setSelectedRating(value)
+},[])
+  const [priceRange,setPriceRange]=useState([1000,5000])
+  const changePrice=useCallback((e:Event,value:any)=>{
+    setPriceRange(value)
+  },[])
+  const applyFilters=()=>{
+    let updatedList = dataList;
+    // Rating filter
+    if(selectedRating){
+      updatedList = updatedList.filter((items:any)=>parseInt(items.rating)===parseInt(selectedRating))
+    }
+    // Category Filter
+    if(selectedCategory){
+      updatedList = updatedList.filter((items:any)=>items.category ===selectedCategory)
+    }
+    // cuision Filter
+    // ["pakistan","turky"]
+      const cuisionChecked = cuision.filter((items:any)=>items.checked).map((item:any)=>item.label.toLowerCase())
+
+      if(cuisionChecked.length){
+        updatedList = updatedList.filter((item)=>(
+          cuisionChecked.includes(item.cuisine.toLowerCase())
+        ))
+      }
+      // Price Filter
+      const MinPrice = priceRange[0]
+      const MaxPrice = priceRange[1]
+      updatedList=updatedList.filter((items)=>(items.price>=MinPrice&&items.price<=MaxPrice))
+      // search Filter
+      if(inputSearch){
+        updatedList = updatedList.filter((items)=>(
+          items.title.toLowerCase().search(inputSearch.toLowerCase().trim())!==-1))
+      }
+    console.log(cuisionChecked)
+    setList(updatedList)
+      !updatedList.length?setResultFound(false):setResultFound(true)
+  }
+  useEffect(() => {
+    applyFilters()
+  }, [selectedRating,selectedCategory,cuision,priceRange,inputSearch])
+  
   return (
+
     <div className={styles.container}>
       <Head>
         <title>Create Next App</title>
@@ -20,10 +94,12 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-       <SearchBar handlerChange={handlerChange} value={value}/>
-       <div className="flex gap-5 px-2 py-2">
-       <FilterPanel/>
-       <List/>
+       <SearchBar handlerChange={(e:any)=>setInputsearch(e.target.value)} value={inputSearch}/>
+       <div className="flex  gap-5 px-2 py-2">
+        
+       <FilterPanel priceRange={priceRange}changePrice={changePrice} changedCheckId={changedCheckId} cuision={cuision}  selectedRating={selectedRating} handlerselectedRating={handlerselectedRating} handleSlectCategory={handleSlectCategory} selectedCategory={selectedCategory}/>
+       {resultFound?<List list={list}/>:<EmptyList/>}
+       
        </div>
       </main>
 

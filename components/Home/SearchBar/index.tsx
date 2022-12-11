@@ -7,6 +7,7 @@ interface Props{
   value:string
 }
 const index:NextPage<Props> = ({handlerChange,value}) => {
+  console.log(value)
   return (
     <div>
       <div className="bg-red-400 flex gap-2 py-2 px-2">
